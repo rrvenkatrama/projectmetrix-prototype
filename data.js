@@ -93,12 +93,14 @@ function seedData() {
           { id: 'm1', name: 'Discovery complete', kind: 'milestone', parentId: 's1', pct: 100 },
           { id: 's2', name: 'Phase 2 — Build', kind: 'summary', parentId: null },
           { id: 't3', name: 'Rack & network build-out', kind: 'task', parentId: 's2', duration: 10, pct: 60 },
-          { id: 't4', name: 'Storage provisioning', kind: 'task', parentId: 's2', duration: 6, pct: 30 },
+          { id: 't4', name: 'Storage provisioning', kind: 'task', parentId: 's2', duration: 6, pct: 30,
+            notes: 'Vendor confirmed the array ships week of 24 Aug, but would not commit in writing — treat the date as soft until we have the PO acknowledgement.\n\nFallback if it slips: reuse the four decommissioned shelves from the Fremont cage. Marcus has checked they are still under support until March.' },
           { id: 't5', name: 'Security hardening', kind: 'task', parentId: 's2', duration: 5, pct: 0 },
           { id: 't13', name: 'Backup & DR validation', kind: 'task', parentId: 's2', duration: 4, pct: 0 },
           { id: 's3', name: 'Phase 3 — Migration', kind: 'summary', parentId: null },
           { id: 't6', name: 'Pilot app migration', kind: 'task', parentId: 's3', duration: 5, pct: 0 },
-          { id: 't7', name: 'DB migration', kind: 'task', parentId: 's3', duration: 8, pct: 0 },
+          { id: 't7', name: 'DB migration', kind: 'task', parentId: 's3', duration: 8, pct: 0,
+            notes: 'Needs a named DBA, not the role placeholder. Priya is chasing capacity — see action item.\n\nCutover window must avoid month-end close (last 3 working days).' },
           { id: 't8', name: 'App wave 1', kind: 'task', parentId: 's3', duration: 6, pct: 0 },
           { id: 't9', name: 'App wave 2', kind: 'task', parentId: 's3', duration: 6, pct: 0 },
           { id: 't14', name: 'User comms & training', kind: 'task', parentId: 's3', duration: 4, pct: 0 },
@@ -158,7 +160,7 @@ function seedData() {
      * Fake corporate directory — stands in for LDAP/Entra/Okta federation.
      * `account` distinguishes people who log in from people who are merely
      * NAMED (sponsors, SMEs, vendor contacts). Directory-only people must
-     * not consume a licence seat.
+     * not consume a licence seat
      */
     people: [
       { id: 'u1', name: 'Priya Nair', email: 'priya.nair@acme.com', title: 'Senior Project Manager', dept: 'IT Operations', account: 'login' },

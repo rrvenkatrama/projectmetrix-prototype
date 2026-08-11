@@ -3,7 +3,7 @@
 // "Reset demo" in the header returns to seed data.
 // NOTE: bump this key whenever seedData()'s shape changes, or stale saved
 // state shadows the new seed (design-log finding, 2026-08-07).
-const SAVE_KEY = 'pmproto-v5';
+const SAVE_KEY = 'pmproto-v6';
 const S = (() => {
   try { const s = localStorage.getItem(SAVE_KEY); if (s) return JSON.parse(s); } catch (e) { /* corrupt → reseed */ }
   return seedData();
@@ -18,6 +18,7 @@ let showLinks = true;       // dependency link lines on the chart
 let cpOnly = false;         // critical-path-only filter
 let impactResult = null;    // last action-item impact analysis
 let impactSlipDays = 5;     // assumption behind the impact walk — user-adjustable
+const NOTES_MAX = 2500;     // per-task free-text notes limit
 S.audit = S.audit || [];    // chat/UI write trail
 S.approvedReport = S.approvedReport || null;
 
@@ -39,7 +40,7 @@ function snapshot() {
 }
 
 const $ = sel => document.querySelector(sel);
-const CURRENT_USER = 'u3';   // "logged in as" — a person in the fake directory
+const CURRENT_USER = 'u3';   // "logged in as" — Rajesh Ramani in the fake directory
 
 /** Live (not soft-deleted) entities. Archived rows stay visible but muted. */
 const liveProjects = () => S.projects.filter(p => !p.deletedAt);
@@ -242,7 +243,7 @@ function renderGantt() {
   let rowIdx = 0;
 
   let names = `<div class="gantt-row ghead">
-    <div class="c-id">#</div><div class="c-cri" title="critical — zero float">CRI</div><div class="c-name">Task</div><div class="c-dur">Dur</div><div class="c-date">Start</div>
+    <div class="c-id">#</div><div class="c-cri" title="critical — zero float">CRI</div><div class="c-note" title="task notes">✎</div><div class="c-name">Task</div><div class="c-dur">Dur</div><div class="c-date">Start</div>
     <div class="c-date">Finish</div><div class="c-pct">%</div><div class="c-res">Resource</div><div class="c-preds">Preds</div><div class="c-cons">Constraint</div></div>`;
   let rows = '';
   visible.forEach(t => {
@@ -283,6 +284,9 @@ function renderGantt() {
       <div class="c-cri">${r && r.critical
         ? `<span class="cri-dot ${cpOnly ? 'cp' : ''} ${t.kind === 'summary' ? 'sum' : ''}" title="${t.kind === 'summary' ? 'contains critical tasks' : `critical — zero float, delays here push the finish date`}">◆</span>`
         : r && t.kind !== 'summary' ? `<span class="cri-float" title="${r.float} working day(s) of float">${r.float}d</span>` : ''}</div>
+      <div class="c-note">${t.kind === 'summary' ? '' : `<button class="notebtn ${t.notes ? 'has' : ''}"
+        onclick="UI.openNotes('${t.id}')"
+        title="${t.notes ? esc(t.notes.slice(0, 120)) + (t.notes.length > 120 ? '…' : '') : 'Add notes'}">${t.notes ? '📝' : '✎'}</button>`}</div>
       <div class="c-name" style="padding-left:${ind}px">
         <span class="handle" draggable="${!cpOnly}" ondragstart="UI.dragStart(event,'${t.id}')"
           onclick="UI.selectTask('${t.id}')" title="${cpOnly ? 'click to select (reordering is off while filtered)' : 'drag to move · click to select'}">⠿</span>
@@ -625,7 +629,9 @@ function renderModal() {
   const host = $('#modal');
   if (!modal) { host.innerHTML = ''; host.classList.remove('open'); return; }
   host.classList.add('open');
-  host.innerHTML = `<div class="modal-backdrop" onclick="UI.modalCancel()"></div>
+  // Editing dialogs lock the backdrop: a stray click outside must never
+  // discard typing. Only the explicit buttons close them.
+  host.innerHTML = `<div class="modal-backdrop"${modal.lockBackdrop ? '' : ' onclick="UI.modalCancel()"'}></div>
     <div class="modal ${modal.wide ? 'wide' : ''}" role="dialog" aria-modal="true">
       <div class="modal-head"><b>${esc(modal.title)}</b>
         <a class="modal-x" onclick="UI.modalCancel()" title="cancel">✕</a></div>
@@ -743,7 +749,7 @@ function renderProjectDetails() {
    * it is good news at 40% delivered and bad news at 10%. This is delivered
    * progress ÷ budget consumed: above 1.00 means we are getting more
    * delivery than we are paying for. (Replaces the bare burn % — an
-   * invented metric, replaced 2026-08-09.)
+   * invented metric flagged as an invented metric.)
    */
   const burnPct = a.budget ? (a.actualCost || 0) / a.budget : null;
   const cpi = burnPct ? roll.pct / burnPct : null;
@@ -956,7 +962,7 @@ function docsPanel(ownerType, ownerId) {
 
 // ───────────────────────── Portfolio / rollups ─────────────────────────
 // Rollups are computed bottom-up from the engine, never hand-entered
-// (rollups are computed, never hand-entered). A project belongs to at most ONE program.
+//. A project belongs to at most ONE program.
 
 /**
  * THE single rollup. Every tab reads RAG, progress, SPI and slip from
@@ -1311,6 +1317,42 @@ window.UI = {
     render(); toast(`"${b.name}" is now the current version — editable. Undo to go back.`);
   },
 
+  // ── task notes ──
+  /**
+   * Notes are free text on a task — the context a duration and a date can
+   * never carry ("waiting on the vendor's confirmation, see CHG-004").
+   * Capped at NOTES_MAX so the column stays a note field rather than
+   * becoming a document store.
+   */
+  openNotes(id) {
+    const t = taskById(id);
+    if (!t) return;
+    const text = t.notes ?? '';
+    openModal({
+      title: `Notes — ${t.name}`,
+      kind: 'notes',
+      targetId: id,
+      saveLabel: 'OK',
+      // The dialog must survive a stray click outside it.
+      lockBackdrop: true,
+      bodyHtml: `
+        <textarea id="note-text" class="notearea" maxlength="${NOTES_MAX}" rows="12"
+          placeholder="Context that the schedule itself cannot carry — assumptions, blockers, decisions, who to chase."
+          oninput="UI.noteCount()">${esc(text)}</textarea>
+        <div class="notefoot">
+          <span id="note-count">${text.length} / ${NOTES_MAX}</span>
+          <span class="notehint">Closes only on OK or Cancel.</span>
+        </div>`,
+    });
+  },
+  noteCount() {
+    const ta = $('#note-text'), out = $('#note-count');
+    if (!ta || !out) return;
+    const n = ta.value.length;
+    out.textContent = `${n} / ${NOTES_MAX}`;
+    out.className = n >= NOTES_MAX ? 'at-limit' : n > NOTES_MAX * 0.9 ? 'near-limit' : '';
+  },
+
   // ── WBS structure editing ──
   addAbove(id) {
     const t = taskById(id);
@@ -1539,6 +1581,15 @@ window.UI = {
   modalCancel() { draft = null; closeModal(); },
   modalSave() {
     if (modal.kind === 'info') return this.modalCancel();
+    if (modal.kind === 'notes') {
+      const t = taskById(modal.targetId);
+      const text = ($('#note-text')?.value ?? '').slice(0, NOTES_MAX);
+      const had = !!t.notes;
+      if (text.trim()) t.notes = text; else delete t.notes;
+      audit('update-task', `${t.name}: notes ${text.trim() ? (had ? 'updated' : 'added') : 'cleared'}`);
+      closeModal(); render();
+      return;
+    }
     this.draftCapture();
     const d = draft;
     if (modal.kind === 'cancel') {
@@ -1640,7 +1691,7 @@ window.UI = {
     });
   },
 
-  /** Program close is BLOCKED while active children exist (design decision, 2026-08-09). */
+  /** Program close is BLOCKED while active children exist. */
   closeProgram(pgId) {
     const pg = S.programs.find(g => g.id === pgId);
     const active = S.projects.filter(p => p.programId === pgId && !p.archivedAt && p.status !== 'cancelled' && p.status !== 'done');
@@ -1875,7 +1926,7 @@ window.UI = {
   reject(id) {
     const p = S.agentInbox.find(x => x.id === id);
     // The reason is the point: rejections are the eval corpus that tells
-    // us WHY an agent was wrong .
+    // us WHY an agent was wrong.
     const reason = prompt(`Why is this ${p.kind} proposal wrong?\n(Recorded — rejection reasons train the agent evals.)`, '');
     if (reason === null) return;
     p.status = 'rejected';
@@ -2011,7 +2062,7 @@ const ROUTES = [
     re: /assigned to|working on|(?:tasks|workload)\s+(?:of|for)\b/i, toolset: 'assignments',
     run(m) {
       // resolve the resource by scanning the utterance for known names —
-      // deterministic name resolution, never in the model's head 
+      // deterministic name resolution, never in the model's head
       const txt = m.input.toLowerCase();
       const res = S.resources.find(r => txt.includes(r.name.toLowerCase().split(' ')[0]));
       if (!res) return addMsg('bot', `Whose tasks? Resources: ${S.resources.map(r => r.name).join(', ')}. <i>(clarify())</i>`);

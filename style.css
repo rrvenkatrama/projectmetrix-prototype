@@ -254,3 +254,28 @@ label.chip input { margin-right: 3px; vertical-align: middle; }
   background: rgba(17, 24, 39, .85); color: #a7f3d0;
   padding: 4px 10px; border-radius: 8px; pointer-events: none;
 }
+
+/* ── task notes column ─────────────────────────────────────────────── */
+.c-note { width: 26px; text-align: center; flex-shrink: 0; }
+.notebtn {
+  border: none; background: none; cursor: pointer; padding: 0 2px;
+  font-size: 12px; line-height: 1; color: #c3c8d1; border-radius: 4px;
+}
+.notebtn:hover { color: var(--accent); background: #eef2ff; }
+/* A task that HAS notes must be obvious at a glance, otherwise the note
+   gets written once and never read again. */
+.notebtn.has { color: var(--accent); }
+
+.notearea {
+  width: 100%; font: 14px/1.55 inherit; color: var(--ink);
+  padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px;
+  resize: vertical; min-height: 220px;
+}
+.notearea:focus { border-color: var(--accent); outline: none; }
+.notefoot {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 6px; font-size: 12px; color: var(--muted2);
+}
+.notefoot .near-limit { color: var(--amber); font-weight: 600; }
+.notefoot .at-limit { color: var(--red); font-weight: 700; }
+.notehint { font-style: italic; }
