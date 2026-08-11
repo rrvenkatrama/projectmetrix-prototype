@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProjectMetrix — interactive scheduling prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">Project<span>Metrix</span></div>
+    <div class="proto-tag">INTERACTIVE PROTOTYPE</div>
+    <button class="reset-btn" title="discard local edits, return to seed demo data"
+      onclick="if(confirm('Reset the prototype to the seed demo data? All local edits are discarded.')){localStorage.removeItem('pmproto-v5');location.reload()}">Reset demo</button>
+    <select id="projectSelect"></select>
+  </header>
+
+  <main>
+    <nav id="crumbs"></nav>
+    <div class="tabs" id="tabs"></div>
+    <div id="content"></div>
+  </main>
+
+  <button id="chatfab" title="chat with ProjectMetrix" onclick="document.body.classList.add('chat-open')">💬</button>
+
+  <aside id="chat">
+    <div class="head">Chat <span>· mock router + fake LLM · writes gated</span>
+      <a class="chat-close" title="close chat" onclick="document.body.classList.remove('chat-open')">✕</a></div>
+    <div id="msgs"></div>
+    <div class="suggest" id="suggest"></div>
+    <form id="chatform">
+      <input id="chatinput" placeholder="e.g. push DB migration out 3 days" autocomplete="off">
+      <button class="btn primary" type="submit">Send</button>
+    </form>
+  </aside>
+
+  <div id="modal"></div>
+  <div id="toast"></div>
+  <div id="perfbadge" title="engine = CPM compute · script = JS + HTML build · to-paint = until the browser painted"></div>
+
+  <script src="engine.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
