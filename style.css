@@ -15,17 +15,25 @@ header {
   grid-area: header; background: #111827; color: #fff;
   display: flex; align-items: center; gap: 16px; padding: 0 16px;
 }
-header .logo { font-weight: 700; color: #fff; text-decoration: none; cursor: pointer; }
-header .logo:hover span { color: #bfdbfe; }
+header a.logo,
+header a.logo:link,
+header a.logo:visited { font-weight: 700; color: #fff; text-decoration: none; cursor: pointer; }
+header a.logo:hover span { color: #bfdbfe; }
 header .logo span { color: #93c5fd; }
 header .proto-tag { font-size: 11px; background: #b45309; padding: 2px 8px; border-radius: 10px; }
 header select { margin-left: auto; padding: 4px 8px; border-radius: 6px; border: none; }
 .reset-btn { font-size: 11px; background: #374151; color: #fff; border: none; border-radius: 6px; padding: 3px 8px; cursor: pointer; }
 .reset-btn:hover { background: #4b5563; }
-/* Testers are inside the demo, not on the repo — catch reactions in the moment. */
-.feedback-link { font-size: 11px; background: #1d4ed8; color: #fff; text-decoration: none;
-                 border-radius: 6px; padding: 3px 9px; white-space: nowrap; }
-.feedback-link:hover { background: #2563eb; }
+/* Testers are inside the demo, not on the repo — catch reactions in the moment.
+   :link/:visited spelled out so a stale cache never leaves it as raw purple
+   link text on the dark header. */
+header a.feedback-link,
+header a.feedback-link:link,
+header a.feedback-link:visited {
+  font-size: 11px; font-weight: 600; background: #2563eb; color: #fff;
+  text-decoration: none; border-radius: 6px; padding: 3px 9px; white-space: nowrap;
+}
+header a.feedback-link:hover { background: #3b82f6; color: #fff; }
 
 main { grid-area: main; overflow: auto; padding: 14px; }
 #crumbs { display: flex; align-items: center; flex-wrap: wrap; gap: 2px; font-size: 12px; margin-bottom: 8px; }
