@@ -15,7 +15,8 @@ header {
   grid-area: header; background: #111827; color: #fff;
   display: flex; align-items: center; gap: 16px; padding: 0 16px;
 }
-header .logo { font-weight: 700; }
+header .logo { font-weight: 700; color: #fff; text-decoration: none; cursor: pointer; }
+header .logo:hover span { color: #bfdbfe; }
 header .logo span { color: #93c5fd; }
 header .proto-tag { font-size: 11px; background: #b45309; padding: 2px 8px; border-radius: 10px; }
 header select { margin-left: auto; padding: 4px 8px; border-radius: 6px; border: none; }
