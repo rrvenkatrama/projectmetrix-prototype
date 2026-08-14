@@ -62,6 +62,23 @@ app.js       views, editing, chat, agent inbox, lifecycle
 State persists to `localStorage`, so your edits survive a refresh. **Reset
 demo** in the header restores the seed data.
 
+## Feedback wanted
+
+If you are testing this, please tell me what you found — especially the
+parts that annoyed you.
+
+**[Report a bug](https://github.com/rrvenkatrama/projectmetrix-prototype/issues/new?template=bug_report.yml)**
+· **[Request a feature](https://github.com/rrvenkatrama/projectmetrix-prototype/issues/new?template=feature_request.yml)**
+· **[General feedback](https://github.com/rrvenkatrama/projectmetrix-prototype/issues/new?template=feedback.yml)**
+· **[Browse what's already reported](https://github.com/rrvenkatrama/projectmetrix-prototype/issues)**
+
+A GitHub account is needed to post. If you would rather not create one,
+email works too — the address is in the issue page's sidebar links.
+
+Feature requests describing the *situation* you were in are worth more than
+ones describing a feature, and confusing interactions are bugs. Feedback on
+the prototype shapes the real product, so nothing is too small.
+
 ## Status
 
 This is a prototype, not the product. It is deliberately quick and dirty in

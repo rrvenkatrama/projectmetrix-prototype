@@ -1,0 +1,48 @@
+name: Feature request
+description: Something the tool should be able to do
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Requests grounded in real project work are the most valuable ones.
+        Describing the situation you were in usually beats describing the
+        feature you had in mind — it leaves room for a better answer.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What were you trying to do?
+      description: The situation, not the solution.
+      placeholder: |
+        I needed to see which of my projects share the same vendor, because
+        when that vendor slips it hits three programs at once.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like it to do?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: importance
+    attributes:
+      label: How much does this matter to you?
+      options:
+        - I would not use the tool without it
+        - It would save me real time every week
+        - Nice to have
+    validations:
+      required: true
+
+  - type: textarea
+    id: today
+    attributes:
+      label: How do you handle this today?
+      description: Spreadsheet, MS Project, Jira, a recurring meeting, not at all…
+    validations:
+      required: false

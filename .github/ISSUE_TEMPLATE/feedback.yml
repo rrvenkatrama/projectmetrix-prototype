@@ -1,0 +1,45 @@
+name: General feedback
+description: Impressions, confusion, or anything that doesn't fit the other two
+title: "[Feedback] "
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Blunt feedback is more useful than polite feedback. If something was
+        confusing, that is a defect in the product, not in you.
+
+  - type: textarea
+    id: feedback
+    attributes:
+      label: Your feedback
+      description: Whatever stood out — good, bad or baffling.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: role
+    attributes:
+      label: What's your background?
+      description: Helps weigh the feedback. Skip it if you'd rather not say.
+      options:
+        - Project or program manager
+        - PMO lead
+        - Engineering or IT leadership
+        - Individual contributor
+        - Other
+        - Prefer not to say
+    validations:
+      required: false
+
+  - type: dropdown
+    id: verdict
+    attributes:
+      label: Would you use this for real work?
+      options:
+        - Yes, as it stands
+        - Yes, if some things were fixed
+        - No
+        - Too early to tell
+    validations:
+      required: false
