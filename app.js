@@ -585,7 +585,7 @@ function renderActions() {
 // ───────────────────────── Directory & people pickers ─────────────────────────
 // The directory stands in for LDAP/Entra/Okta. `account: 'directory'` marks
 // people who can be NAMED but never log in (sponsors, SMEs, vendor contacts)
-// — they must not consume a licence seat.
+// — they must not consume a license seat.
 
 const personById = id => S.people.find(p => p.id === id);
 const personName = id => personById(id)?.name ?? '—';
@@ -998,7 +998,7 @@ function projectRollup(pid) {
   const overdue = S.actionItems.filter(a => a.projectId === pid && a.status === 'open' && a.due < todayStr);
   const topRiskScore = Math.max(0, ...risks.map(r => r.probability * r.impact));
 
-  // Why each project is the colour it is — shown in the UI so the rollup
+  // Why each project is the color it is — shown in the UI so the rollup
   // is auditable rather than a magic light.
   const reasons = [];
   if (slip > 5) reasons.push(`finish slipped ${slip}d vs baseline`);

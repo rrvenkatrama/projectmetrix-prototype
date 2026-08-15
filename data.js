@@ -10,7 +10,7 @@ function seedData() {
         id: 'pg1', portfolioId: 'pf1', name: 'Infrastructure Modernization',
         attrs: {
           programId: 'PRG-0001', description: 'Consolidate and modernize core infrastructure ahead of the lease exit.',
-          strategicObjectives: 'Exit the Fremont data centre before lease expiry; cut infrastructure run-cost by 30%.',
+          strategicObjectives: 'Exit the Fremont data center before lease expiry; cut infrastructure run-cost by 30%.',
           linkedObjectiveIds: ['ok1'],
           programManagerId: 'u3', sponsorId: 'u4',
           businessUnits: ['IT Operations', 'Business Applications'],
@@ -160,7 +160,7 @@ function seedData() {
      * Fake corporate directory — stands in for LDAP/Entra/Okta federation.
      * `account` distinguishes people who log in from people who are merely
      * NAMED (sponsors, SMEs, vendor contacts). Directory-only people must
-     * not consume a licence seat
+     * not consume a license seat
      */
     people: [
       { id: 'u1', name: 'Priya Nair', email: 'priya.nair@acme.com', title: 'Senior Project Manager', dept: 'IT Operations', account: 'login' },
